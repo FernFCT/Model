@@ -16,32 +16,35 @@ ivc.add_output('rho',val=1.225)
 
 
 model.add_subsystem('weight',WeightComp())
-model.add_subsystem('Fig',PowerComp())
+model.add_subsystem('FOM',PowerComp())
 
 
 model.connect('m','weight.m')
 
-model.connect('weight.W','Fig.W')
-model.connect('cd0','Fig.cd0')
-model.connect('rho','Fig.rho')
-model.connect('TS','Fig.TS')
-model.connect('r','Fig.r')
+model.connect('weight.W','FOM.W')
+model.connect('cd0','FOM.cd0')
+model.connect('rho','FOM.rho')
+model.connect('TS','FOM.TS')
+model.connect('r','FOM.r')
 
 
 prob.driver = ScipyOptimizeDriver()
+prob.driver.options['optimizer'] = 'SLSQP'
+prob.driver.options['tol'] = 1e-9
+prob.driver.options['disp'] = True
 
-model.add_design_var('r', lower=0.5, upper=1)
-model.add_constraint('Fig.FM',equals=0.85)
-model.add_objective('rho',scaler=-1)
+model.add_design_var('r',lower=0.5,upper=1.5)
+model.add_constraint('FOM.FM',equals=0.85)
+model.add_objective('FOM.PH')
 
 prob.setup()
 
 prob['m'] = 2500
-prob['r'] = 0.9
+prob['r'] = 1.5
 
 
 #prob.run_model()
+prob.set_solver_print(level=0)
 prob.run_driver()
-print(prob['Fig.FM'])
-print(prob['Fig.r'])
-#print(prob['PH'])
+print('Figure of Merit:',prob['FOM.FM'])
+print('Required Radius:',prob['FOM.r'])

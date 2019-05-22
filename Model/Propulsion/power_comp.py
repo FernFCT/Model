@@ -12,7 +12,7 @@ class PowerComp(ExplicitComponent):
         self.add_input('rho',desc='density at SL')
         self.add_input('TS') # tip speed
         self.add_input('r')
-
+        
 
         self.add_output('FM',val=0.0,desc='Figure of Merit')
         self.add_output('PH',val=0.0,desc='Power for Hover')
@@ -30,7 +30,7 @@ class PowerComp(ExplicitComponent):
 
 
         S = 3.14*(r**2)
-        T = W # thrust required
+        T = W/8 # thrust required per motor
         ct = T/( rho *S* (tip_speed**2) )
         cp = ( 1.15*( (ct**(3/2)) /(2**.5) ) + (1/8)*0.1*cd0 )
         PI = T * ((T/(2*S*rho))**.5)
@@ -38,7 +38,7 @@ class PowerComp(ExplicitComponent):
         FM = PI/PH
 
         outputs['FM'] = FM
-        outputs['PH'] = PH
+        outputs['PH'] = 8*PH/1000
 
 
 
