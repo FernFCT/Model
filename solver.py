@@ -1,6 +1,6 @@
 from openmdao.api import Problem, Group, IndepVarComp, ExecComp, ScipyOptimizeDriver
-from pip_git_tutorial.Propulsion.power_comp import PowerComp
-from pip_git_tutorial.Propulsion.weight_comp import WeightComp
+from Model.Propulsion.power_comp import PowerComp
+from Model.Propulsion.weight_comp import WeightComp
 
 prob = Problem(model=Group())
 
