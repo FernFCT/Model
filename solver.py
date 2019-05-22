@@ -7,7 +7,7 @@ prob = Problem(model=Group())
 model = prob.model
 
 ivc = model.add_subsystem('ivc',IndepVarComp(),promotes_outputs = ['*'])
-#ivc.add_output('PH',val=0.0)
+
 ivc.add_output('m',val=0.0)
 ivc.add_output('r',val=0.0)
 ivc.add_output('TS',val=170)
