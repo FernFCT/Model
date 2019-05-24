@@ -42,8 +42,8 @@ prob.driver.options['tol'] = 1e-5
 prob.driver.options['disp'] = True
 
 model.add_design_var('r',lower=0.5,upper=1.5)
-model.add_design_var('We/W0',lower=0.50,upper=0.80)
-model.add_constraint('weight.W0',lower = 2000,upper=2500)
+model.add_design_var('We/W0',lower=0.30,upper=0.70) # 30% - 70%, from lecture
+model.add_constraint('weight.W0',lower = 1500,upper=2500)
 model.add_constraint('FOM.FM',equals=0.80)
 model.add_objective('FOM.PH')
 

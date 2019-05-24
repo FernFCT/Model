@@ -1,9 +1,9 @@
 from openmdao.api import ExplicitComponent
 
+n = 1 # variable accounting for failed motor and e extra power
 
 class PowerComp(ExplicitComponent):
-
-
+    
  
 
     def setup(self):
@@ -30,7 +30,7 @@ class PowerComp(ExplicitComponent):
 
 
         S = 3.14*(r**2)
-        T = W/8 # thrust required per motor
+        T = n*W/8 # thrust required per motor
         ct = T/( rho *S* (tip_speed**2) )
         cp = ( 1.15*( (ct**(3/2)) /(2**.5) ) + (1/8)*0.1*cd0 )
         PI = T * ((T/(2*S*rho))**.5)
