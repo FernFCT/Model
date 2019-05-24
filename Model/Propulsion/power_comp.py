@@ -18,11 +18,11 @@ class PowerComp(ExplicitComponent):
         self.add_output('PH',val=0.0,desc='Power for Hover')
 
         # self.declare_partials('y', 'x')
-        self.declare_partials(of='*', wrt='*', method='fd')
+        self.declare_partials(of='*', wrt='*', method='cs')
         # self.set_check_partial_options('x', method='cs')
 
     def compute(self, inputs, outputs):
-        W = inputs['W']
+        W = inputs['W']*9.81    # convert to [N]
         r = inputs['r']
         rho = inputs['rho']
         tip_speed = inputs['TS']
