@@ -13,7 +13,7 @@
 
 #function toolCostPerVehicle = costBuildup(rProp,cruiseOutput)
 import numpy as np
-from .ToolingCost import ToolingCost
+from ToolingCost import ToolingCost
 
 def CostBuildup(r_prop,c_ref, b_ref):
     # Inputs

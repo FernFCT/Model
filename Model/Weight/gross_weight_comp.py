@@ -2,6 +2,11 @@ from openmdao.api import ExplicitComponent
 
 
 class GrossWeightComp(ExplicitComponent):
+    # Coefficients
+    
+
+
+
 
     def setup(self):
         self.add_input('Wp')   # weight of payload (passangers)

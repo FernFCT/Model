@@ -3,7 +3,7 @@ from openmdao.api import ExplicitComponent
 rho = 1.225 #density, [kg/m**3]
 
 
-class   WeightComp(ExplicitComponent):  
+class   CruiseComp(ExplicitComponent):  
 
    
     def setup(self):
@@ -21,4 +21,5 @@ class   WeightComp(ExplicitComponent):
       
 
     def compute(self,inputs,outputs):
-        outputs['P_C'] = (( (2*(inputs['W']**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
+        W = inputs['W']*9.81 
+        outputs['P_C'] = (( (2*(W**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
