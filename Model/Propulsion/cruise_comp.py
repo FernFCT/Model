@@ -24,8 +24,8 @@ class   CruiseComp(ExplicitComponent):
     def compute(self,inputs,outputs):
         W = inputs['W']*9.81 
         # add Cl & Cd if airfoil code doesnt work
-        cl = 2*W/(rho*(inputs['V']**2)*inputs['S'])
-        k = 1/(3.14*0.8*inputs['AR']) # e = 0.8
-        cd = inputs['cd0'] + k*cl**2
-        #outputs['P_C'] = (( (2*(W**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
-        outputs['P_C'] = (( (2*(W**3)*(cd**2))/(inputs['S']*rho*(cl**3) ))**.5)/1000
+        #cl = 2*W/(rho*(inputs['V']**2)*inputs['S'])
+        #k = 1/(3.14*0.8*inputs['AR']) # e = 0.8
+        #cd = inputs['cd0'] + k*cl**2
+        outputs['P_C'] = (( (2*(W**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
+        #outputs['P_C'] = (( (2*(W**3)*(cd**2))/(inputs['S']*rho*(cl**3) ))**.5)/1000
