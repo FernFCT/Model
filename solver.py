@@ -3,6 +3,7 @@ from Model.Propulsion.power_comp import PowerComp
 from Model.Propulsion.range_comp import RangeComp
 from Model.Propulsion.cruise_comp import CruiseComp
 from Model.Weight.gross_weight_comp import GrossWeightComp
+from Model.Weight.thrust_weight_comp import ThrustWeightComp
 
 
 prob = Problem(model=Group())
@@ -27,16 +28,32 @@ ivc.add_output('Cl',val=0.32)
 ivc.add_output('S',val=13.2)
 ivc.add_output('AR',val=7)
 
+ivc.add_output('G',val=5)   #climb gradient
+ivc.add_output('n',val=1)   # load factor
+ivc.add_output('e',val=0)   # oswald efficiency
+ivc.add_output('W_S',val=0) # wind loading
 
+# adding subsystems
 model.add_subsystem('weight',GrossWeightComp())
 model.add_subsystem('FOM',PowerComp())
 model.add_subsystem('range',RangeComp())
 model.add_subsystem('cruiseP',CruiseComp()) # cruise power
+model.add_subsystem('T_W',ThrustWeightComp())
 
-# conencting to weights comp
+# conencting to gross_weights comp
 model.connect('Wb','weight.Wb')
 model.connect('Wp','weight.Wp')
 model.connect('We/W0','weight.We/W0')
+
+# connecting to thrustWeightComp
+model.connect('G','T_W.G')
+model.connect('n','T_W.n')
+model.connect('e','T_W.e')
+model.connect('AR','T_W.AR')
+model.connect('cd0','T_W.cd0')
+model.connect('rho','T_W.rho')
+model.connect('W_S','T_W.W_S')
+model.connect('V','T_W.Vc')
 
 # connecting to Props comp
 model.connect('weight.W0','FOM.W')
