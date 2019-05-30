@@ -21,7 +21,7 @@ class   RangeComp(ExplicitComponent):
     def compute(self,inputs,outputs):
         LO_Wh = inputs['P_L']*LO_time*1000  # Energy spent on liftoff
         time = ( (B_density*inputs['B_W']*res)-LO_Wh-(LO_Wh/2) ) / (1000*inputs['P_C'])
-        dist = (time-FAA)*inputs['V']
+        dist = (time-FAA)*inputs['V']*3.6   #conversion from [m/s]->[kph]
 
         outputs['R'] = dist
         outputs['t'] = time

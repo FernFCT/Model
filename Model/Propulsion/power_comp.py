@@ -27,12 +27,13 @@ class PowerComp(ExplicitComponent):
         rho = inputs['rho']
         tip_speed = inputs['TS']
         cd0 = inputs['cd0']
+        sol = 0.1 
 
 
         S = 3.14*(r**2)
         T = n*W/8 # thrust required per motor
         ct = T/( rho *S* (tip_speed**2) )
-        cp = ( 1.15*( (ct**(3/2)) /(2**.5) ) + (1/8)*0.1*cd0 )
+        cp = ( 1.15*( (ct**(3/2)) /(2**.5) ) + (1/8)*sol*cd0 ) # solidity
         PI = T * ((T/(2*S*rho))**.5)
         PH = cp*rho*S*(tip_speed**3)
         FM = PI/PH
