@@ -18,7 +18,7 @@ ivc.add_output('We/W0')    # empty to gross fraction
 
 ivc.add_output('m',val=0.0)
 ivc.add_output('r',val=0.0)
-ivc.add_output('TS',val=175) # ~55% of mach @ Sl
+ivc.add_output('TS',val=188) # ~50% of mach @ Sl
 ivc.add_output('cd0',val=0.0197)
 ivc.add_output('rho',val=1.225)
 
@@ -84,8 +84,9 @@ prob.driver.options['tol'] = 1e-9
 prob.driver.options['disp'] = True
 
 model.add_design_var('r',lower=0.5,upper=1.5)
-model.add_design_var('We/W0',lower=0.50,upper=0.70) # 30% - 70%, from lecture
+model.add_design_var('We/W0',lower=0.40,upper=0.70) # 30% - 70%, from lecture
 model.add_design_var('V',lower=67,upper=103)
+
 
 
 model.add_constraint('FOM.FM',equals=0.80)
@@ -106,7 +107,7 @@ prob['S'] = 13.2
 prob['V'] = 90
 prob['Cd'] = 0.03 # not used for calculation but here to run
 prob['Cl'] = 0.32 # not used for calculation but here to run
-#prob['TS'] = 170
+#prob['TS'] = 160
 
 
 
