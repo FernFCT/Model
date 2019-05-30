@@ -22,7 +22,7 @@ ivc.add_output('TS',val=175) # ~55% of mach @ Sl
 ivc.add_output('cd0',val=0.0197)
 ivc.add_output('rho',val=1.225)
 
-ivc.add_output('V') # [m/s],~230[mph]
+ivc.add_output('V') 
 ivc.add_output('Cd',val=0.03)
 ivc.add_output('Cl',val=0.32)
 ivc.add_output('S',val=13.2)
@@ -38,7 +38,7 @@ model.add_subsystem('weight',GrossWeightComp())
 model.add_subsystem('FOM',PowerComp())
 model.add_subsystem('range',RangeComp())
 model.add_subsystem('cruiseP',CruiseComp()) # cruise power
-model.add_subsystem('T_W',ThrustWeightComp())
+#model.add_subsystem('T_W',ThrustWeightComp())
 
 # conencting to gross_weights comp
 model.connect('Wb','weight.Wb')
@@ -46,14 +46,14 @@ model.connect('Wp','weight.Wp')
 model.connect('We/W0','weight.We/W0')
 
 # connecting to thrustWeightComp
-model.connect('G','T_W.G')
-model.connect('n','T_W.n')
-model.connect('e','T_W.e')
-model.connect('AR','T_W.AR')
-model.connect('cd0','T_W.cd0')
-model.connect('rho','T_W.rho')
-model.connect('W_S','T_W.W_S')
-model.connect('V','T_W.Vc')
+#model.connect('G','T_W.G')
+#model.connect('n','T_W.n')
+#model.connect('e','T_W.e')
+#model.connect('AR','T_W.AR')
+#model.connect('cd0','T_W.cd0')
+#model.connect('rho','T_W.rho')
+#model.connect('W_S','T_W.W_S')
+#model.connect('V','T_W.Vc')
 
 # connecting to Props comp
 model.connect('weight.W0','FOM.W')
