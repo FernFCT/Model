@@ -16,7 +16,7 @@ class   RangeComp(ExplicitComponent):
         self.add_output('R',desc='Max Range W/Reserve & Emergency 30min')
         self.add_output('t',desc='Time flying @ max range')
 
-        self.declare_partials(of='*', wrt='*', method='fd')
+        self.declare_partials(of='*', wrt='*', method='cs')
 
     def compute(self,inputs,outputs):
         LO_Wh = inputs['P_L']*LO_time*1000  # Energy spent on liftoff
