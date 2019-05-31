@@ -109,6 +109,7 @@ model.add_constraint('range.R',equals=340)
 model.add_constraint('weight.Wb_W0',lower=0.25,upper=0.30) # batt to gross
 #model.add_constraint('FOM.PH',upper=550)
 model.add_constraint('cruiseP.P_C',upper=100)
+#model.add_constraint('cruiseP.cl',upper=0.4)
 
 model.add_objective('FOM.PH',scaler=-1)
 
@@ -140,5 +141,6 @@ print('Required Radius:',prob['FOM.r'],'[m]')
 print('Required Power for Hover:',prob['FOM.PH'],'[kW]')
 print('Required Power for Cruise:',prob['cruiseP.P_C'],'[kW]')
 print('Max Trip Range @',prob['V'],'[m/s]:',prob['range.R'],'[km]','Time',prob['range.t'],'[hr]')
-
+print('cl',prob['cruiseP.cl'])
+print('cd',prob['cruiseP.cd'])
 

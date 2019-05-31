@@ -42,25 +42,38 @@
 
 #def operatingCost2( r_prop, cruise_speed, avg_dist, shaft_power, mass_struct, mass_batt, mass_motor, b_ref, cRef, power_to_weight ):
 # function inputs
-r_prop = 1
-cruise_speed = 102.82 
-avg_dist = 193121
-shaft_power = 156
-mass_struct = 180
-mass_batt = 627.66
-mass_motor = 635.8
-b_ref = 13.21
-c_ref = 1
-power_to_weight = 0.22
+
+c_ref = 1 #m 
 
 from costanalysis.CostBuildup import CostBuildup
+from openmdao.api import ExplicitComponent
 
-# Assumptions
-flight_hours_per_year = 600
-flight_time = avg_dist/cruise_speed
-flights_per_year = flight_hours_per_year / (flight_time / 3600)
-vehicle_life_years = 10
-n_vehicles_per_facility = 200
+class OperatingCost(ExplicitComponent):
+    def setup(self):
+        self.add_input('r_prop',desc = 'prop radius')
+        self.add_input('cruise_speed',desc = 'cruise speed')
+        self.add_input('avg_dist',desc = 'range')
+        self.add_input('shaft_power',desc = 'shaft power')
+        self.add_input('mass_struct',desc = 'structural mass')
+        self.add_input('mass_batt',desc = 'battery mass')
+        self.add_input('mass_motor',desc = 'motor mass')
+        self.add_input('b_ref',desc = 'span')
+        self.add_input('power_to_weight',desc = 'power to weight ratio') 
+
+        self.add_output('Cost_per_flight',desc = 'cost per flight')
+
+        self.declare_partials('*','*',method = 'cs')
+    
+    def compute(self,inputs,outputs):
+        avg_dist = inputs['avg_dist']
+        cruise_speed = inputs['cruise_speed']
+        # Assumptions
+        flight_hours_per_year = 600
+        flight_time = avg_dist/cruise_speed
+        flights_per_year = flight_hours_per_year / (flight_time / 3600)
+        vehicle_life_years = 10
+        n_vehicles_per_facility = 200
+
 
 
 # def CostBuildup( r_prop,c_ref, b_ref ):
@@ -157,6 +170,3 @@ servo_repl_cost_per_flight + labor_cost_per_flight
 
 print('Cost Per Flight: $', cost_per_flight*1000)
 #   return [C]
-
-
-   

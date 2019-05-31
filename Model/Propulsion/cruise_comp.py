@@ -16,7 +16,8 @@ class   CruiseComp(ExplicitComponent):
         self.add_input('cd0',desc='zero lift drag')
 
         self.add_output('P_C',desc='Power required for cruise')
-
+        self.add_output('cl')
+        self.add_output('cd')
         self.declare_partials(of='*', wrt='*', method='cs')
 
       
@@ -25,7 +26,10 @@ class   CruiseComp(ExplicitComponent):
         W = inputs['W']*9.81
         # add Cl & Cd if airfoil code doesnt work
         cl = 2*W/(rho*(inputs['V']**2)*inputs['S'])
+
         k = 1/(3.14*0.8*inputs['AR']) # e = 0.8
         cd = inputs['cd0'] + k*cl**2
+        outputs['cl'] = cl
+        outputs['cd'] = cd
         #outputs['P_C'] = (( (2*(W**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
         outputs['P_C'] = (( (2*(W**3)*(cd**2))/(inputs['S']*rho*(cl**3) ))**.5)/1000
