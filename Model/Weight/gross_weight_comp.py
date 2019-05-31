@@ -12,6 +12,8 @@ class GrossWeightComp(ExplicitComponent):
         self.add_input('We',desc='empty weight')
         self.add_output('W0') # gross weight
         self.add_output('We_W0') # gross weight
+        self.add_output('Wb_W0') # gross weight
+
         self.declare_partials('*', '*')
         self.declare_partials(of='*', wrt='*', method='cs')
 
@@ -22,6 +24,7 @@ class GrossWeightComp(ExplicitComponent):
         #We_W0 = inputs['We']/inputs['W0']
         W0 = (Wp + Wb + We) 
         outputs['We_W0'] = We/W0
+        outputs['Wb_W0'] = Wb/W0
         outputs['W0'] = W0
         
     #def compute_partials(self, inputs, partials):

@@ -13,7 +13,7 @@ model = prob.model
 
 ivc = model.add_subsystem('ivc',IndepVarComp(),promotes_outputs = ['*'])
 
-ivc.add_output('Wb')  #[kg], battery weight
+ivc.add_output('Wb',val=600)  #[kg], battery weight
 ivc.add_output('Wp',val=454)    #[kg], weight of passangers
 #ivc.add_output('We_W0')    # empty to gross fraction
 
@@ -97,23 +97,27 @@ prob.driver.options['optimizer'] = 'SLSQP'
 prob.driver.options['tol'] = 1e-9
 prob.driver.options['disp'] = True
 
-model.add_design_var('r',lower=0.7,upper=1.5)
+model.add_design_var('r',lower=0.7,upper=1)
 model.add_design_var('V',lower=67,upper=103)
-model.add_design_var('Wb',lower=600,upper=750) # proff sees typical of 20% gross weight
+model.add_design_var('Wb') # proff sees typical of 20-25% gross weight
 
 #model.add_constraint('weight.We_W0',lower=0.45,upper=0.70) # 30% - 70%, from lecture
-model.add_constraint('weight.W0',lower=1700,upper=2000)
+#model.add_constraint('weight.W0',lower=1700,upper=2000)
 model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
-#model.add_constraint('FOM.PH',upper=500)
-#model.add_constraint('cruiseP.P_C',upper=90)
-#model.add_constraint('range.R',equals=200)
-model.add_objective('rho')
+
+model.add_constraint('range.R',equals=340)
+model.add_constraint('weight.Wb_W0',lower=0.25,upper=0.30) # batt to gross
+#model.add_constraint('FOM.PH',upper=550)
+model.add_constraint('cruiseP.P_C',upper=100)
+
+model.add_objective('FOM.PH',scaler=-1)
 
 prob.setup()
 
 # Initial Guesses
 #prob['We/W0'] = 0.6
 prob['r'] = 0.7
+prob['V'] = 80
 
 
 #opt driver
@@ -128,6 +132,7 @@ prob.run_driver()
 print('Batt Weight',prob['Wb'])
 print('Tip Speed',prob['TS'],'[m/s]')
 print('Empty Weight Fraction:',prob['weight.We_W0'])
+print('Battery Weight Fraction:',prob['weight.Wb_W0'])
 print('Empty Weight',prob['emptyW.We'])
 print('Gross Weight:',prob['weight.W0'],'[kg]')
 print('Figure of Merit:',prob['FOM.FM'])

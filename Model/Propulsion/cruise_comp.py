@@ -17,12 +17,12 @@ class   CruiseComp(ExplicitComponent):
 
         self.add_output('P_C',desc='Power required for cruise')
 
-        self.declare_partials(of='*', wrt='*', method='fd')
+        self.declare_partials(of='*', wrt='*', method='cs')
 
       
 
     def compute(self,inputs,outputs):
-        W = inputs['W']*9.81 
+        W = inputs['W']*9.81
         # add Cl & Cd if airfoil code doesnt work
         cl = 2*W/(rho*(inputs['V']**2)*inputs['S'])
         k = 1/(3.14*0.8*inputs['AR']) # e = 0.8
