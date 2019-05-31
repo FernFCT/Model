@@ -5,6 +5,7 @@ from Model.Propulsion.cruise_comp import CruiseComp
 from Model.Weight.gross_weight_comp import GrossWeightComp
 from Model.Weight.thrust_weight_comp import ThrustWeightComp
 from Model.Weight.weight_buildup_comp import EmptyWeightComp
+from Model.costanalysis1.operating_cost import OperatingCost
 
 
 prob = Problem(model=Group())
@@ -16,6 +17,7 @@ ivc = model.add_subsystem('ivc',IndepVarComp(),promotes_outputs = ['*'])
 ivc.add_output('Wb',val=600)  #[kg], battery weight
 ivc.add_output('Wp',val=454)    #[kg], weight of passangers
 #ivc.add_output('We_W0')    # empty to gross fraction
+ivc.add_output('Wm',val=50)
 
 ivc.add_output('m')
 ivc.add_output('r')
@@ -42,7 +44,7 @@ model.add_subsystem('FOM',PowerComp())
 model.add_subsystem('range',RangeComp())
 model.add_subsystem('cruiseP',CruiseComp()) # cruise power
 model.add_subsystem('emptyW',EmptyWeightComp())
-#model.add_subsystem('T_W',ThrustWeightComp())
+model.add_subsystem('cost',OperatingCost())
 
 # conencting to gross_weights comp
 model.connect('Wb','weight.Wb')
@@ -91,6 +93,20 @@ model.connect('FOM.PH','range.P_L')
 model.connect('cruiseP.P_C','range.P_C')
 model.connect('V','range.V')
 
+# connecting to cost analysis
+model.connect('r','cost.r_prop')
+model.connect('V','cost.cruise_speed')
+model.connect('range.R','cost.avg_dist')
+model.connect('weight.We_W0','cost.We/W0')
+model.connect('weight.W0','cost.W0')
+model.connect('Wb','cost.mass_batt')
+model.connect('Wm','cost.mass_motor')
+model.connect('Neg','cost.Neg')
+model.connect('S','cost.S')
+model.connect('AR','cost.AR')
+model.connect('FOM.PH','cost.shaft_power')
+model.connect('cruiseP.P_C','cost.P_C')
+
 
 prob.driver = ScipyOptimizeDriver()
 prob.driver.options['optimizer'] = 'SLSQP'
@@ -108,10 +124,11 @@ model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
 model.add_constraint('range.R',equals=340)
 model.add_constraint('weight.Wb_W0',lower=0.25,upper=0.30) # batt to gross
 #model.add_constraint('FOM.PH',upper=550)
-model.add_constraint('cruiseP.P_C',upper=100)
+model.add_constraint('cruiseP.P_C',upper=80)
 #model.add_constraint('cruiseP.cl',upper=0.4)
+model.add_objective('cost.Cost',scaler=-1)
 
-model.add_objective('FOM.PH',scaler=-1)
+#model.add_objective('FOM.PH',scaler=-1)
 
 prob.setup()
 
@@ -141,6 +158,7 @@ print('Required Radius:',prob['FOM.r'],'[m]')
 print('Required Power for Hover:',prob['FOM.PH'],'[kW]')
 print('Required Power for Cruise:',prob['cruiseP.P_C'],'[kW]')
 print('Max Trip Range @',prob['V'],'[m/s]:',prob['range.R'],'[km]','Time',prob['range.t'],'[hr]')
+print('Cost per trip (2025?): $',prob['cost.Cost']*1.146)
 print('cl',prob['cruiseP.cl'])
 print('cd',prob['cruiseP.cd'])
 print('cd0',prob['cruiseP.cd0'])

@@ -56,7 +56,7 @@ class OperatingCost(ExplicitComponent):
         self.add_input('shaft_power',desc = 'shaft power')
         self.add_input('mass_struct',desc = 'structural mass')
         self.add_input('mass_batt',desc = 'battery mass')
-        self.add_input('mass_motor',desc = 'motor mass')
+        #self.add_input('mass_motor',desc = 'motor mass')
         self.add_input('b_ref',desc = 'span')
         self.add_input('power_to_weight',desc = 'power to weight ratio') 
 

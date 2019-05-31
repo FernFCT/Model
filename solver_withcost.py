@@ -1,10 +1,10 @@
-from openmdao.api import Problem, Group, IndepVarComp, ExecComp, ScipyOptimizeDriver, pyOptSparseDriver
+from openmdao.api import Problem, Group, IndepVarComp, ExecComp, ScipyOptimizeDriver
 from Model.Propulsion.power_comp import PowerComp
 from Model.Propulsion.range_comp import RangeComp
 from Model.Propulsion.cruise_comp import CruiseComp
 from Model.Weight.gross_weight_comp import GrossWeightComp
 # from Model.Weight.thrust_weight_comp import ThrustWeightComp
-from Model.costanalysis(2).operating_cost import OperatingCost
+from Model.costanalysis1.operating_cost import OperatingCost
 
 
 prob = Problem(model=Group())
@@ -95,13 +95,13 @@ model.connect('cruiseP.P_C','cost.P_C')
 
 
 # Setup optimization algorithm
-prob.driver = pyOptSparseDriver()
-prob.driver.options['optimizer'] = "SLSQP"
-prob.driver.hist_file = 'hist.hst'
-# prob.driver = ScipyOptimizeDriver()
-# prob.driver.options['optimizer'] = 'SLSQP'
-# prob.driver.options['tol'] = 1e-9
-# prob.driver.options['disp'] = True
+#prob.driver = pyOptSparseDriver()
+#prob.driver.options['optimizer'] = "SLSQP"
+#prob.driver.hist_file = 'hist.hst'
+prob.driver = ScipyOptimizeDriver()
+prob.driver.options['optimizer'] = 'SLSQP'
+prob.driver.options['tol'] = 1e-9
+prob.driver.options['disp'] = True
 
 model.add_design_var('r',lower=0.5,upper=1.5)
 model.add_design_var('We/W0',lower=0.40,upper=0.70) # 30% - 70%, from lecture
