@@ -8,12 +8,13 @@ class GrossWeightComp(ExplicitComponent):
     def setup(self):
         self.add_input('Wp')   # weight of payload (passangers)
         self.add_input('Wb')   # weight of battery
+        self.add_input('S',desc='lifting surface')
         #self.add_input('We/W0')   # empty over gross
         self.add_input('We',desc='empty weight')
         self.add_output('W0') # gross weight
         self.add_output('We_W0') # gross weight
         self.add_output('Wb_W0') # gross weight
-
+        self.add_output('W_S')
         self.declare_partials('*', '*')
         self.declare_partials(of='*', wrt='*', method='cs')
 
@@ -26,6 +27,7 @@ class GrossWeightComp(ExplicitComponent):
         outputs['We_W0'] = We/W0
         outputs['Wb_W0'] = Wb/W0
         outputs['W0'] = W0
+        outputs['W_S'] = W0/inputs['S']
         
     #def compute_partials(self, inputs, partials):
         #Wp = inputs['Wp']

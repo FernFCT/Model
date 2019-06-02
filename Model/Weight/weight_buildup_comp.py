@@ -33,7 +33,7 @@ class EmptyWeightComp(ExplicitComponent):
         Sf = 362.744               # fuselage wetted area
         Sw = 142.233               # trapezoidal wing area
         Wdg = inputs['W0']*2.2046              # gross weight
-        Wen = 110              # engine weight each [lb]
+        Wen = 105              # engine weight each [lb]
         Wl = Wdg            # langing gross weight
         #Wuav = 800          # usual 800-1400
         M = V/1116.13       # mach
@@ -45,7 +45,7 @@ class EmptyWeightComp(ExplicitComponent):
         # fuselage
         W_f = 0.052*(Sf**1.086)*((Nz*Wdg)**0.22)*(L_f**(-0.051))*((L_D)**(-0.072))*(q**0.241)
         # landing gear
-        W_lg = 0.095*((Nl*Wl)**0.768)*((Lm/12)**0.845)
+        W_lg = (0.095*((Nl*Wl)**0.768)*((Lm/12)**0.845))*0.70
         # installed engine
         W_ie = 2.575*(Wen**0.922)*(Neg)
         # flight controls
@@ -57,14 +57,14 @@ class EmptyWeightComp(ExplicitComponent):
         # electrical
         W_el = 12.57*(W_av)**0.51
         # air conditioning
-        W_ac = 0.265*Wdg**0.52*Np**0.68*W_av**0.17*M**0.08
+        W_ac = (0.265*Wdg**0.52*Np**0.68*W_av**0.17*M**0.08)*0.85
         # furnishings 
         W_fur = 0.0582*Wdg - 65
         # actuators
         # 12 actuators, 0.65 kg each
         W_act = 12*1.43
         
-        We = 0.8*(W_w + W_f + W_lg + W_ie + W_fc + W_h + W_av + W_el + W_ac + W_fur + W_act)/2.205
+        We = (W_w + W_f + W_lg + W_ie + W_fc + W_h + W_av + W_el + W_ac + W_fur + W_act)/2.205
         #print('weight',We)
         outputs['We'] = We  # outputs kg
         

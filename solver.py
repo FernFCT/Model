@@ -50,6 +50,7 @@ model.add_subsystem('cost',OperatingCost())
 model.connect('Wb','weight.Wb')
 model.connect('Wp','weight.Wp')
 model.connect('emptyW.We','weight.We')
+model.connect('S','weight.S')
 #model.connect('We/W0','weight.We/W0')
 
 # connecting to empty weight comp
@@ -109,26 +110,29 @@ model.connect('cruiseP.P_C','cost.P_C')
 
 
 prob.driver = ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'SLSQP'
+prob.driver.options['optimizer'] = 'SLSQP' # i
 prob.driver.options['tol'] = 1e-9
 prob.driver.options['disp'] = True
 
-model.add_design_var('r',lower=0.7,upper=1)
+#opt driver
+#prob.driver = pyOptSparseDriver()
+#prob.driver.options['optimizer'] = "SLSQP"
+#prob.driver.hist_file = 'host.hst'
+
+
+model.add_design_var('r',lower=0.7,upper=1.2)
 model.add_design_var('V',lower=67,upper=103)
 model.add_design_var('Wb') # proff sees typical of 20-25% gross weight
+#model.add_design_var('S',lower=10,upper=20)
 
-#model.add_constraint('weight.We_W0',lower=0.45,upper=0.70) # 30% - 70%, from lecture
-#model.add_constraint('weight.W0',lower=1700,upper=2000)
 model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
-
-model.add_constraint('range.R',equals=340)
-model.add_constraint('weight.Wb_W0',lower=0.25,upper=0.30) # batt to gross
-#model.add_constraint('FOM.PH',upper=550)
-model.add_constraint('cruiseP.P_C',upper=80)
-#model.add_constraint('cruiseP.cl',upper=0.4)
+model.add_constraint('range.R',equals=245)
+model.add_constraint('weight.Wb_W0',lower=0.20,upper=0.30) # batt to gross
+#model.add_constraint('cruiseP.cl',upper=0.5)
+#model.add_constraint('weight.W_S',upper = 1327)
+#model.add_constraint('cruiseP.P_C',upper=110)
 model.add_objective('cost.Cost',scaler=-1)
 
-#model.add_objective('FOM.PH',scaler=-1)
 
 prob.setup()
 
@@ -138,15 +142,13 @@ prob['r'] = 0.7
 prob['V'] = 80
 
 
-#opt driver
-#prob.driver = pyOptSparceDriver()
-#prob.driver.options['optimizer'] = "SLSQP"
-#prob.driver.hist_file = 'host.hst'
 
 
 #prob.run_model()
 prob.set_solver_print(level=0)
 prob.run_driver()
+print('S',prob['S'])
+print('W_S',prob['weight.W_S'])
 print('Batt Weight',prob['Wb'])
 print('Tip Speed',prob['TS'],'[m/s]')
 print('Empty Weight Fraction:',prob['weight.We_W0'])

@@ -35,7 +35,7 @@ class PowerComp(ExplicitComponent):
         ct = T/( rho *S* (tip_speed**2) )
         cp = ( 1.15*( (ct**(3/2)) /(2**.5) ) + (1/8)*sol*cd0 ) # solidity
         PI = T * ((T/(2*S*rho))**.5)
-        PH = cp*rho*S*(tip_speed**3)
+        PH = cp*rho*S*(tip_speed**3)*.99 
         FM = PI/PH
 
         outputs['FM'] = FM
