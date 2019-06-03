@@ -29,14 +29,14 @@ class OperatingCost(ExplicitComponent):
 
         r_prop = inputs['r_prop']
         cruise_speed = inputs['cruise_speed']
-        avg_dist = inputs['avg_dist']
+        avg_dist = inputs['avg_dist']*1000
         shaft_power = inputs['shaft_power']
         mass_struct = inputs['We/W0']*inputs['W0'] - inputs['mass_motor']
         mass_batt = inputs['mass_batt']
         mass_motor1 = inputs['mass_motor']
         mass_motor = mass_motor1*inputs['Neg']
         S_single = inputs['S']/2
-        b_ref = (inputs['AR'] * S_single)**0.5
+        b_ref = 2*(inputs['AR'] * S_single)**0.5
         c_ref = S_single / b_ref
         power_to_weight = inputs['P_C'] / inputs['W0']
 
@@ -45,20 +45,20 @@ class OperatingCost(ExplicitComponent):
         flight_time = avg_dist/cruise_speed
         flights_per_year = flight_hours_per_year / (flight_time / 3600)
         vehicle_life_years = 5
-        n_vehicles_per_facility = 50
+        n_vehicles_per_facility = 200
 
         # Tooling Cost
         tool_cost_per_vehicle = CostBuildup(r_prop,b_ref, c_ref)
 
         # Material Cost
-        material_cost_per_kg = 700
+        material_cost_per_kg = 220
         material_cost = material_cost_per_kg * mass_struct
         # Battery Cost
         power_to_weight_hr = power_to_weight * flight_time / 3600
         battery_cost_per_kg = 700 * power_to_weight_hr   # Roughly $700/kW-hr * P/W [kW-hr /kg]
         battery_cost = battery_cost_per_kg * mass_batt
         # Motor Cost
-        motor_cost_per_kg = 500   # Approx $1500 for 10 kg motor +  controller ?
+        motor_cost_per_kg = 150   # Approx $1500 for 10 kg motor +  controller ?
         motor_cost = motor_cost_per_kg * mass_motor
 
         # Servo cost
@@ -66,10 +66,10 @@ class OperatingCost(ExplicitComponent):
         servo_cost = n_servo * 800 # Estimate $800 per servo in large quantities
 
         # Avionics cost
-        avionics_cost = 60000
+        avionics_cost = 30000
 
         # BRS (Ballistics Recovery System) cost
-        BRS_cost = 5200*2
+        BRS_cost = 5200
 
         # Total acquisition cost
         acquisition_cost = battery_cost + motor_cost + servo_cost + avionics_cost + BRS_cost + material_cost + tool_cost_per_vehicle
@@ -82,7 +82,7 @@ class OperatingCost(ExplicitComponent):
 
         # Facility rental cost
         vehicle_footprint = 1.2 * (8 * r_prop + 1) * (4 * r_prop + 3) # m^2, 20# for movement around aircraft for maintenance, etc.
-        area_cost = 10.7639 * 20 * 12 # $/m^2, $2/ft^2 per month assumed
+        area_cost = 10.7639 * 2 * 12 # $/m^2, $2/ft^2 per month assumed
 
         # Facility Cost = Vehicle footprint + 10x footprint for operations
         # averaged over # of vehicles at each facility
@@ -109,7 +109,7 @@ class OperatingCost(ExplicitComponent):
         servo_repl_cost_per_flight = flight_time / 3600 / servo_life_hrs * servo_cost
 
         # Maintenace Cost
-        human_cost_per_hour = 85*2
+        human_cost_per_hour = 60
         man_hr_per_flight_hour = 0.10 # periodic maintenance estimate
         man_hr_per_flight = 0.2 # Inspection, battery swap estimate
         labor_cost_per_flight = (man_hr_per_flight_hour * flight_time / 3600 + man_hr_per_flight) * human_cost_per_hour

@@ -28,8 +28,8 @@ ivc.add_output('rho',val=1.225)
 ivc.add_output('V') 
 #ivc.add_output('Cd',val=0.03)
 #ivc.add_output('Cl',val=0.32)
-ivc.add_output('S')
-ivc.add_output('AR')
+ivc.add_output('S',val=14.9)
+ivc.add_output('AR',val=10)
 
 ivc.add_output('G',val=5)   #climb gradient
 ivc.add_output('n',val=1)   # load factor
@@ -121,21 +121,22 @@ prob.driver.options['disp'] = True
 #prob.driver.hist_file = 'host.hst'
 
 
-model.add_design_var('r',lower=0.7,upper=1.2)
-model.add_design_var('V',lower=67)
+model.add_design_var('r',lower=0.7,upper=1.5)
+model.add_design_var('V',lower=67,upper=103)
 model.add_design_var('Wb') # proff sees typical of 20-25% gross weight
-model.add_design_var('S',lower=10,upper=20)
-model.add_design_var('AR',lower=7,upper=10)
+#model.add_design_var('S',lower=10,upper=15)
+#model.add_design_var('AR',lower=7,upper=13)
 
 
 #model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
 model.add_constraint('range.R',equals=340)
 model.add_constraint('weight.Wb_W0',lower=0.15,upper=0.30) # batt to gross
-model.add_constraint('cruiseP.clear',lower=0.25)
-model.add_constraint('FOM.PH',upper=700)
+model.add_constraint('weight.W0',upper=2700)
+model.add_constraint('cruiseP.clear',lower=0.1)
+model.add_constraint('FOM.PH',upper=600)
 #model.add_constraint('cruiseP.cl',upper=0.5)
 #model.add_constraint('weight.W_S',upper = 1327)
-model.add_constraint('cruiseP.P_C',upper=150)
+model.add_constraint('cruiseP.P_C',upper=200)
 model.add_objective('cost.Cost',scaler=-1)
 
 
@@ -180,5 +181,5 @@ print('cd',prob['cruiseP.cd'])
 print('cd0',prob['cruiseP.cd0'])
 print(' ')
 print('Cost')
-print('Cost per trip (2025?): $',prob['cost.Cost']*1.146)
+print('Cost per trip (2025?): $',prob['cost.Cost'])
 
