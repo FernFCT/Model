@@ -1,4 +1,5 @@
 from openmdao.api import ExplicitComponent
+import numpy as np
 
 rho = 1.225 #density, [kg/m**3]
 
@@ -13,12 +14,15 @@ class   CruiseComp(ExplicitComponent):
         self.add_input('AR',desc='Aspect Ratio')
         self.add_input('S',desc='Refernce Area')
         self.add_input('V',desc='Airspeed')
+        self.add_input('r',desc='prop radius')
         #self.add_input('cd0',desc='zero lift drag')
 
         self.add_output('P_C',desc='Power required for cruise')
         self.add_output('cl')
         self.add_output('cd')
         self.add_output('cd0')
+        self.add_output('B')
+        self.add_output('clear',desc = 'radius clearance')
         self.declare_partials(of='*', wrt='*', method='cs')
 
       
@@ -34,6 +38,7 @@ class   CruiseComp(ExplicitComponent):
         Swet = (10**c)*(inputs['W']*2.2046)**d
         f = (10**a)*Swet**b
         cd0 = f/(inputs['S']*10.7639)
+        cd0 = cd0.real
         k = 1/(3.14*0.8*inputs['AR']) # e = 0.8
         cd = cd0 + k*cl**2
         outputs['cl'] = cl
@@ -41,3 +46,10 @@ class   CruiseComp(ExplicitComponent):
         outputs['cd0'] = cd0
         #outputs['P_C'] = (( (2*(W**3)*(inputs['Cd']**2))/(inputs['S']*rho*(inputs['Cl']**3)) )**.5)/1000
         outputs['P_C'] = (( (2*(W**3)*(cd**2))/(inputs['S']*rho*(cl**3) ))**.5)/1000
+        S = inputs['S']
+        AR = inputs['AR']
+        B = ((S/2)*AR)**0.5
+        r_prop = inputs['r']
+        clear = (B/2 - 3*r_prop)/(B/2)
+        outputs['clear'] = clear
+        outputs['B'] = B

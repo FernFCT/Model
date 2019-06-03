@@ -17,8 +17,8 @@ from .tooling_cost import ToolingCost
 
 def CostBuildup(r_prop,c_ref, b_ref):
     # Inputs
-    fuselage_width = 1
-    fuselage_length = 5
+    fuselage_width = 2.4
+    fuselage_length = 6.5
     toc = 0.15  # Wing / canard thickness
     prop_radius = r_prop
     prop_chord = 0.15 * prop_radius
@@ -27,7 +27,7 @@ def CostBuildup(r_prop,c_ref, b_ref):
 
     parts_per_tool = 1000
 
-    fuselage_height = 1.3 # Guess
+    fuselage_height = 1.75 # Guess
     span = b_ref
     chord = c_ref
 

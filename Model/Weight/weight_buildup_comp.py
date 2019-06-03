@@ -12,6 +12,7 @@ class EmptyWeightComp(ExplicitComponent):
         self.add_input('Neg',desc='number of engines')
         self.add_input('W0',desc='gross weight')
         self.add_input('Np',desc='number of people')
+        self.add_input('S',desc='wing area')
         
         self.declare_partials(of='*', wrt='*', method='cs')
         self.add_output('We',desc='empty weight')
@@ -31,7 +32,7 @@ class EmptyWeightComp(ExplicitComponent):
         Nz = 3.9            # ultimate load factor
         q = 0.5*0.002377*(V**2)  # dynamic pressure at cruise
         Sf = 362.744               # fuselage wetted area
-        Sw = 142.233               # trapezoidal wing area
+        Sw = inputs['S']*10.764                # trapezoidal wing area
         Wdg = inputs['W0']*2.2046              # gross weight
         Wen = 105              # engine weight each [lb]
         Wl = Wdg            # langing gross weight
@@ -45,7 +46,7 @@ class EmptyWeightComp(ExplicitComponent):
         # fuselage
         W_f = 0.052*(Sf**1.086)*((Nz*Wdg)**0.22)*(L_f**(-0.051))*((L_D)**(-0.072))*(q**0.241)
         # landing gear
-        W_lg = (0.095*((Nl*Wl)**0.768)*((Lm/12)**0.845))*0.70
+        W_lg = (0.095*((Nl*Wl)**0.768)*((Lm/12)**0.845))*0.5
         # installed engine
         W_ie = 2.575*(Wen**0.922)*(Neg)
         # flight controls

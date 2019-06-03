@@ -28,8 +28,8 @@ ivc.add_output('rho',val=1.225)
 ivc.add_output('V') 
 #ivc.add_output('Cd',val=0.03)
 #ivc.add_output('Cl',val=0.32)
-ivc.add_output('S',val=13.2)
-ivc.add_output('AR',val=7)
+ivc.add_output('S')
+ivc.add_output('AR')
 
 ivc.add_output('G',val=5)   #climb gradient
 ivc.add_output('n',val=1)   # load factor
@@ -56,6 +56,7 @@ model.connect('S','weight.S')
 # connecting to empty weight comp
 model.connect('AR','emptyW.AR')
 #model.connect('Wb','emptyW.Wb')
+model.connect('S','emptyW.S')
 model.connect('V','emptyW.V')
 model.connect('Neg','emptyW.Neg')
 model.connect('weight.W0','emptyW.W0')
@@ -86,7 +87,7 @@ model.connect('weight.W0','cruiseP.W')
 model.connect('AR','cruiseP.AR')
 model.connect('S','cruiseP.S')
 model.connect('V','cruiseP.V')
-#model.connect('cd0','cruiseP.cd0')
+model.connect('r','cruiseP.r')
 
 # connecting to range comp
 model.connect('Wb','range.B_W')
@@ -121,16 +122,20 @@ prob.driver.options['disp'] = True
 
 
 model.add_design_var('r',lower=0.7,upper=1.2)
-model.add_design_var('V',lower=67,upper=103)
+model.add_design_var('V',lower=67)
 model.add_design_var('Wb') # proff sees typical of 20-25% gross weight
-#model.add_design_var('S',lower=10,upper=20)
+model.add_design_var('S',lower=10,upper=20)
+model.add_design_var('AR',lower=7,upper=10)
 
-model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
-model.add_constraint('range.R',equals=245)
-model.add_constraint('weight.Wb_W0',lower=0.20,upper=0.30) # batt to gross
+
+#model.add_constraint('FOM.FM',lower=0.70,upper=0.80)
+model.add_constraint('range.R',equals=340)
+model.add_constraint('weight.Wb_W0',lower=0.15,upper=0.30) # batt to gross
+model.add_constraint('cruiseP.clear',lower=0.25)
+model.add_constraint('FOM.PH',upper=700)
 #model.add_constraint('cruiseP.cl',upper=0.5)
 #model.add_constraint('weight.W_S',upper = 1327)
-#model.add_constraint('cruiseP.P_C',upper=110)
+model.add_constraint('cruiseP.P_C',upper=150)
 model.add_objective('cost.Cost',scaler=-1)
 
 
@@ -147,21 +152,33 @@ prob['V'] = 80
 #prob.run_model()
 prob.set_solver_print(level=0)
 prob.run_driver()
+print(' ')
+print('Geometry')
 print('S',prob['S'])
+print('AR',prob['AR'])
+print('Span',prob['cruiseP.B'])
 print('W_S',prob['weight.W_S'])
+print('clear',prob['cruiseP.clear'])
+print(' ')
+print('Weights')
 print('Batt Weight',prob['Wb'])
-print('Tip Speed',prob['TS'],'[m/s]')
 print('Empty Weight Fraction:',prob['weight.We_W0'])
 print('Battery Weight Fraction:',prob['weight.Wb_W0'])
 print('Empty Weight',prob['emptyW.We'])
 print('Gross Weight:',prob['weight.W0'],'[kg]')
+print(' ')
+print('Power')
 print('Figure of Merit:',prob['FOM.FM'])
 print('Required Radius:',prob['FOM.r'],'[m]')
 print('Required Power for Hover:',prob['FOM.PH'],'[kW]')
 print('Required Power for Cruise:',prob['cruiseP.P_C'],'[kW]')
 print('Max Trip Range @',prob['V'],'[m/s]:',prob['range.R'],'[km]','Time',prob['range.t'],'[hr]')
-print('Cost per trip (2025?): $',prob['cost.Cost']*1.146)
+print(' ')
+print('Aero')
 print('cl',prob['cruiseP.cl'])
 print('cd',prob['cruiseP.cd'])
 print('cd0',prob['cruiseP.cd0'])
+print(' ')
+print('Cost')
+print('Cost per trip (2025?): $',prob['cost.Cost']*1.146)
 

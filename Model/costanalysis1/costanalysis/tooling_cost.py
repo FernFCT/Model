@@ -51,9 +51,9 @@ def ToolingCost(length, width, depth):
         return p
 
     finish_bit_step = 0.8 * finish_bit_diam # Rougher step size
-    cut_area = length * EllipsePerimeter(width/2,depth)/2; # Amount of material to rough out
-    finish_time = cut_area / (finish_feed * finish_bit_step) * finish_passes; # Time for roughing
-    finish_cost = finish_time * finish_cost_rate; # Roughing cost
+    cut_area = length * EllipsePerimeter(width/2,depth)/2 # Amount of material to rough out
+    finish_time = cut_area / (finish_feed * finish_bit_step) * finish_passes # Time for roughing
+    finish_cost = finish_time * finish_cost_rate # Roughing cost
 
     # Total Cost
     cost = material_cost + rough_cost + finish_cost
